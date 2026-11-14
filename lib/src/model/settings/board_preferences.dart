@@ -151,9 +151,9 @@ sealed class const BoardPrefs._() with _$BoardPrefs implements Serializable {
     'brightness >= 0.2 && brightness <= 1.4, contrast >= 0.4 && contrast <= 2.0 && hue >= 0.0 && hue <= 360.0',
   )
   const factory({
-    @JsonKey(defaultValue: PieceSet.cburnett, unknownEnumValue: PieceSet.cburnett)
+    @JsonKey(defaultValue: PieceSet.alpha, unknownEnumValue: PieceSet.cburnett)
     required PieceSet pieceSet,
-    @JsonKey(defaultValue: BoardTheme.brown, unknownEnumValue: BoardTheme.brown)
+    @JsonKey(defaultValue: BoardTheme.blue2, unknownEnumValue: BoardTheme.brown)
     required BoardTheme boardTheme,
     bool? immersiveModeWhilePlaying,
     required bool hapticFeedback,
@@ -204,8 +204,8 @@ sealed class const BoardPrefs._() with _$BoardPrefs implements Serializable {
   }) = _BoardPrefs;
 
   static const defaults = BoardPrefs(
-    pieceSet: PieceSet.cburnett,
-    boardTheme: BoardTheme.brown,
+    pieceSet: PieceSet.alpha,
+    boardTheme: BoardTheme.blue2,
     immersiveModeWhilePlaying: false,
     hapticFeedback: true,
     showLegalMoves: true,

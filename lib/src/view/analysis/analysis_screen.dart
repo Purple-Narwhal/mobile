@@ -15,6 +15,7 @@ import 'package:lichess_mobile/src/utils/l10n_context.dart';
 import 'package:lichess_mobile/src/utils/navigation.dart';
 import 'package:lichess_mobile/src/utils/share.dart';
 import 'package:lichess_mobile/src/view/analysis/analysis_actions.dart';
+import 'package:lichess_mobile/src/view/analysis/chesswise_explanation_sheet.dart';
 import 'package:lichess_mobile/src/view/analysis/analysis_layout.dart';
 import 'package:lichess_mobile/src/view/analysis/analysis_player_widget.dart';
 import 'package:lichess_mobile/src/view/analysis/analysis_settings_screen.dart';
@@ -555,6 +556,24 @@ class const _BottomBar({
           onPressed: () =>
               Navigator.of(context).push(AnalysisSettingsScreen.buildRoute(options: options)),
         ),
+        if (analysisState.isComputerAnalysisAllowed)
+          BottomSheetAction(
+            leading: const Icon(Icons.lightbulb_outline, color: Color(0xFF62B5E7)),
+            makeLabel: (_) => const Text('Why this move?'),
+            onPressed: () => showModalBottomSheet<void>(
+              context: context,
+              showDragHandle: true,
+              isScrollControlled: true,
+              builder: (_) => ChesswiseExplanationSheet(
+                filters: (
+                  context: analysisState.evaluationContext,
+                  path: analysisState.currentPath,
+                ),
+                savedEval: analysisState.currentNode.eval,
+                positionFen: analysisState.currentPosition.fen,
+              ),
+            ),
+          ),
         BottomSheetAction(
           makeLabel: (context) => Text(context.l10n.flipBoard),
           onPressed: () => ref.read(analysisControllerProvider(options).notifier).toggleBoard(),
