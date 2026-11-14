@@ -30,6 +30,7 @@ import 'package:lichess_mobile/src/utils/navigation.dart';
 import 'package:lichess_mobile/src/utils/screen.dart';
 import 'package:lichess_mobile/src/view/analysis/analysis_screen.dart';
 import 'package:lichess_mobile/src/view/game/status_l10n.dart';
+import 'package:lichess_mobile/src/view/offline_computer/chesswise_practice_insight.dart';
 import 'package:lichess_mobile/src/view/offline_computer/opponent_settings.dart';
 import 'package:lichess_mobile/src/widgets/adaptive_action_sheet.dart';
 import 'package:lichess_mobile/src/widgets/adaptive_bottom_sheet.dart';
@@ -694,6 +695,29 @@ class _PracticeCommentCardState() extends ConsumerState<_PracticeCommentCard> {
                   style: TextStyle(fontWeight: FontWeight.w600, color: iconColor),
                 ),
                 ?suggestedMoveWidget,
+                if (suggestedMove != null && !hideBestMove) ...[
+                  const SizedBox(height: 6),
+                  const Text(
+                    'Chesswise · Why?',
+                    style: TextStyle(
+                      color: Color(0xFF62B5E7),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    chesswisePracticeInsight(
+                      suggestedMove.san,
+                      isAlternative: verdict == MoveVerdict.goodMove,
+                    ),
+                    style: TextStyle(
+                      fontSize: 12,
+                      height: 1.25,
+                      color: textShade(context, 0.85),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -718,9 +742,9 @@ class _PracticeCommentCardState() extends ConsumerState<_PracticeCommentCard> {
       opacity: isEvaluatingMove && gameState.practiceComment == null ? 0.5 : 1.0,
       duration: const Duration(milliseconds: 300),
       child: Container(
-        height: cardHeight,
+        constraints: BoxConstraints(minHeight: cardHeight),
         margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
           color: backgroundColor ?? Theme.of(context).colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(8),

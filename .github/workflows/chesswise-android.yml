@@ -31,6 +31,11 @@ jobs:
         run: |
           flutter analyze lib/src/view/analysis/chesswise_explanation_sheet.dart lib/src/view/analysis/analysis_screen.dart lib/src/model/settings/board_preferences.dart
           flutter test test/view/analysis/chesswise_explanation_test.dart
+      - name: Verify Chesswise Practice feedback
+        run: |
+          dart format lib/src/view/offline_computer/offline_computer_game_screen.dart lib/src/view/offline_computer/chesswise_practice_insight.dart test/view/offline_computer/chesswise_practice_insight_test.dart
+          flutter analyze lib/src/view/offline_computer/offline_computer_game_screen.dart lib/src/view/offline_computer/chesswise_practice_insight.dart test/view/offline_computer/chesswise_practice_insight_test.dart
+          flutter test test/view/offline_computer/chesswise_practice_insight_test.dart
       - name: Build Android debug APK
         run: >-
           flutter build apk --debug
