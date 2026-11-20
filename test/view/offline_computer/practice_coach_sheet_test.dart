@@ -80,7 +80,7 @@ void main() {
       played: move(start, 'e2e4'),
       verdict: MoveVerdict.goodMove,
     );
-    expect(report.heading, 'Your move holds up');
-    expect(report.confidence, 'Limited evidence');
+    expect(report.heading, 'New pressure on the center');
+    expect(report.confidence, 'Position verified');
   });
 }
