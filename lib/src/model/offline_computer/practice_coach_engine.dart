@@ -58,7 +58,6 @@ class _Line {
     return _Line(san, positions);
   }
 
-  String get display => san.take(6).join('  ');
 }
 
 bool _sameMove(String a, String b) => a == b || normalizeUci(a) == normalizeUci(b);
@@ -242,7 +241,7 @@ PracticeCoachReport buildPracticeCoachReport({
     findings.add(_Finding(
       105,
       'Your move allows checkmate',
-      'After ${actual.san.first}, the engine line replies ${actual.san[1]}#. The opponent has a direct finishing move.',
+      'After ${actual.san.first}, the engine line replies ${actual.san[1]}. The opponent has a direct finishing move.',
       'Which forcing check should you have noticed before playing ${played.san}?',
       'Line verified',
     ));
@@ -254,7 +253,8 @@ PracticeCoachReport buildPracticeCoachReport({
   if (!isGood &&
       actual.positions.length >= 2 &&
       best.positions.length >= 2 &&
-      actual.san[1].contains('x')) {
+      actual.san[1].contains('x') &&
+      actual.positions.length == best.positions.length) {
     final actualLead = _Pieces(actual.positions.last.fen).materialLead(white);
     final bestLead = _Pieces(best.positions.last.fen).materialLead(white);
     final baseLead = baseBoard.materialLead(white);
