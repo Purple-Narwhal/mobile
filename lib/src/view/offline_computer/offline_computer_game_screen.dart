@@ -640,10 +640,16 @@ class _PracticeCommentCardState() extends ConsumerState<_PracticeCommentCard> {
           ? steps.length - 1
           : steps.length - 2;
       final feedbackBefore = feedbackStepIndex > 0
-          ? steps[feedbackStepIndex - 1].position.fen
+          ? steps[feedbackStepIndex - 1].position
           : null;
       final reviewedMove = feedbackStepIndex > 0
-          ? steps[feedbackStepIndex].sanMove?.san
+          ? steps[feedbackStepIndex].sanMove
+          : null;
+      final beforeEval = feedbackStepIndex > 0
+          ? steps[feedbackStepIndex - 1].computerAnalysis?.eval
+          : null;
+      final afterEval = feedbackStepIndex > 0
+          ? steps[feedbackStepIndex].computerAnalysis?.eval
           : null;
 
       final verdictText = switch (verdict) {
@@ -708,15 +714,15 @@ class _PracticeCommentCardState() extends ConsumerState<_PracticeCommentCard> {
                   style: TextStyle(fontWeight: FontWeight.w600, color: iconColor),
                 ),
                 ?suggestedMoveWidget,
-
               ],
             ),
           ),
           if ((eval ?? practiceComment.evalAfter) != null && !hideEvaluation)
             Text(eval ?? practiceComment.evalAfter!, style: evalTextStyle),
-          if (feedbackBefore != null && suggestedMove != null && !hideBestMove)
+          if (feedbackBefore != null && reviewedMove != null &&
+              !hideBestMove && !isEvaluatingMove)
             IconButton(
-              tooltip: 'Why this move?',
+              tooltip: 'Explain the move',
               visualDensity: VisualDensity.compact,
               icon: const Icon(Icons.help_outline, size: 20),
               onPressed: () => showModalBottomSheet<void>(
@@ -724,9 +730,12 @@ class _PracticeCommentCardState() extends ConsumerState<_PracticeCommentCard> {
                 showDragHandle: true,
                 isScrollControlled: true,
                 builder: (_) => PracticeCoachSheet(
-                  positionFen: feedbackBefore,
-                  playedMoveSan: reviewedMove,
-                  suggestedMoveSan: suggestedMove.san,
+                  before: feedbackBefore,
+                  played: reviewedMove,
+                  suggested: suggestedMove,
+                  verdict: verdict,
+                  beforeEval: beforeEval,
+                  afterEval: afterEval,
                 ),
               ),
             ),
