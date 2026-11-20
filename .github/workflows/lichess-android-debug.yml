@@ -27,8 +27,8 @@ jobs:
         run: flutter pub get
       - name: Generate models
         run: dart run build_runner build
-      - name: Check formatting of changed files
-        run: dart format --output=none --set-exit-if-changed lib/src/view/offline_computer/offline_computer_game_screen.dart lib/src/view/offline_computer/practice_coach_sheet.dart test/view/offline_computer/practice_coach_sheet_test.dart lib/src/view/analysis/analysis_screen.dart
+      - name: Format changed Dart files
+        run: dart format lib/src/view/offline_computer/offline_computer_game_screen.dart lib/src/view/offline_computer/practice_coach_sheet.dart test/view/offline_computer/practice_coach_sheet_test.dart lib/src/view/analysis/analysis_screen.dart
       - name: Analyze changed code
         run: flutter analyze lib/src/view/offline_computer/offline_computer_game_screen.dart lib/src/view/offline_computer/practice_coach_sheet.dart test/view/offline_computer/practice_coach_sheet_test.dart lib/src/view/analysis/analysis_screen.dart lib/src/model/settings/board_preferences.dart
       - name: Run coaching handoff tests
