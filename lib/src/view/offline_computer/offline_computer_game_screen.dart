@@ -30,7 +30,7 @@ import 'package:lichess_mobile/src/utils/navigation.dart';
 import 'package:lichess_mobile/src/utils/screen.dart';
 import 'package:lichess_mobile/src/view/analysis/analysis_screen.dart';
 import 'package:lichess_mobile/src/view/game/status_l10n.dart';
-import 'package:lichess_mobile/src/view/offline_computer/chesswise_practice_insight.dart';
+import 'package:lichess_mobile/src/view/offline_computer/practice_coach_sheet.dart';
 import 'package:lichess_mobile/src/view/offline_computer/opponent_settings.dart';
 import 'package:lichess_mobile/src/widgets/adaptive_action_sheet.dart';
 import 'package:lichess_mobile/src/widgets/adaptive_bottom_sheet.dart';
@@ -633,6 +633,25 @@ class _PracticeCommentCardState() extends ConsumerState<_PracticeCommentCard> {
       iconColor = practiceComment.color;
       backgroundColor = practiceComment.color.withValues(alpha: 0.1);
 
+      // The feedback can persist after the opponent replies. Find the
+      // move that actually owns this verdict, not the current board position.
+      final steps = gameState.game.steps;
+      final feedbackStepIndex = steps.last.computerAnalysis?.practiceComment != null
+          ? steps.length - 1
+          : steps.length - 2;
+      final feedbackBefore = feedbackStepIndex > 0
+          ? steps[feedbackStepIndex - 1].position
+          : null;
+      final reviewedMove = feedbackStepIndex > 0
+          ? steps[feedbackStepIndex].sanMove
+          : null;
+      final beforeEval = feedbackStepIndex > 0
+          ? steps[feedbackStepIndex - 1].computerAnalysis?.eval
+          : null;
+      final afterEval = feedbackStepIndex > 0
+          ? steps[feedbackStepIndex].computerAnalysis?.eval
+          : null;
+
       final verdictText = switch (verdict) {
         MoveVerdict.goodMove => context.l10n.studyGoodMove,
         MoveVerdict.notBest => context.l10n.mobileGoodMoveButThereIsBetter,
@@ -695,34 +714,31 @@ class _PracticeCommentCardState() extends ConsumerState<_PracticeCommentCard> {
                   style: TextStyle(fontWeight: FontWeight.w600, color: iconColor),
                 ),
                 ?suggestedMoveWidget,
-                if (suggestedMove != null && !hideBestMove) ...[
-                  const SizedBox(height: 6),
-                  const Text(
-                    'Chesswise · Why?',
-                    style: TextStyle(
-                      color: Color(0xFF62B5E7),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    chesswisePracticeInsight(
-                      suggestedMove.san,
-                      isAlternative: verdict == MoveVerdict.goodMove,
-                    ),
-                    style: TextStyle(
-                      fontSize: 12,
-                      height: 1.25,
-                      color: textShade(context, 0.85),
-                    ),
-                  ),
-                ],
               ],
             ),
           ),
           if ((eval ?? practiceComment.evalAfter) != null && !hideEvaluation)
             Text(eval ?? practiceComment.evalAfter!, style: evalTextStyle),
+          if (feedbackBefore != null && reviewedMove != null &&
+              !hideBestMove && !isEvaluatingMove)
+            IconButton(
+              tooltip: 'Explain the move',
+              visualDensity: VisualDensity.compact,
+              icon: const Icon(Icons.help_outline, size: 20),
+              onPressed: () => showModalBottomSheet<void>(
+                context: context,
+                showDragHandle: true,
+                isScrollControlled: true,
+                builder: (_) => PracticeCoachSheet(
+                  before: feedbackBefore,
+                  played: reviewedMove,
+                  suggested: suggestedMove,
+                  verdict: verdict,
+                  beforeEval: beforeEval,
+                  afterEval: afterEval,
+                ),
+              ),
+            ),
         ],
       );
     } else if (gameState.turn == gameState.game.playerSide) {

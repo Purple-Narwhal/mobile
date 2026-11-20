@@ -1,7 +1,9 @@
-name: Chesswise Android debug APK
+name: Lichess fork Android debug APK
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: read
@@ -27,15 +29,12 @@ jobs:
         run: flutter pub get
       - name: Generate models
         run: dart run build_runner build
-      - name: Verify added analysis code
-        run: |
-          flutter analyze lib/src/view/analysis/chesswise_explanation_sheet.dart lib/src/view/analysis/analysis_screen.dart lib/src/model/settings/board_preferences.dart
-          flutter test test/view/analysis/chesswise_explanation_test.dart
-      - name: Verify Chesswise Practice feedback
-        run: |
-          dart format lib/src/view/offline_computer/offline_computer_game_screen.dart lib/src/view/offline_computer/chesswise_practice_insight.dart test/view/offline_computer/chesswise_practice_insight_test.dart
-          flutter analyze lib/src/view/offline_computer/offline_computer_game_screen.dart lib/src/view/offline_computer/chesswise_practice_insight.dart test/view/offline_computer/chesswise_practice_insight_test.dart
-          flutter test test/view/offline_computer/chesswise_practice_insight_test.dart
+      - name: Format changed Dart files
+        run: dart format lib/src/view/offline_computer/offline_computer_game_screen.dart lib/src/view/offline_computer/practice_coach_sheet.dart lib/src/model/offline_computer/practice_coach_engine.dart test/view/offline_computer/practice_coach_sheet_test.dart lib/src/view/analysis/analysis_screen.dart
+      - name: Analyze changed code
+        run: flutter analyze lib/src/view/offline_computer/offline_computer_game_screen.dart lib/src/view/offline_computer/practice_coach_sheet.dart test/view/offline_computer/practice_coach_sheet_test.dart lib/src/view/analysis/analysis_screen.dart lib/src/model/settings/board_preferences.dart
+      - name: Test deterministic coaching
+        run: flutter test test/view/offline_computer/practice_coach_sheet_test.dart
       - name: Build Android debug APK
         run: >-
           flutter build apk --debug
@@ -44,7 +43,7 @@ jobs:
       - name: Downloadable Android APK
         uses: actions/upload-artifact@v4
         with:
-          name: chesswise-android-debug-apk
+          name: lichess-fork-android-debug-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
           retention-days: 7
           if-no-files-found: error
