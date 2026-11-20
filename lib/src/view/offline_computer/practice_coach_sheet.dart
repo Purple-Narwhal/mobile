@@ -34,7 +34,7 @@ class const PracticeCoachSheet({
   final String? playedMoveSan;
   final String? suggestedMoveSan;
 
-  static final Uri _coachUrl = Uri.parse('https://app.whythismove.com/');
+  static final Uri _coachUrl = Uri.parse('https://whythismove.com/');
 
   @override
   Widget build(BuildContext context) {
