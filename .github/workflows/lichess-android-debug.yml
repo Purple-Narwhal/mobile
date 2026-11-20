@@ -30,10 +30,10 @@ jobs:
       - name: Generate models
         run: dart run build_runner build
       - name: Format changed Dart files
-        run: dart format lib/src/view/offline_computer/offline_computer_game_screen.dart lib/src/view/offline_computer/practice_coach_sheet.dart test/view/offline_computer/practice_coach_sheet_test.dart lib/src/view/analysis/analysis_screen.dart
+        run: dart format lib/src/view/offline_computer/offline_computer_game_screen.dart lib/src/view/offline_computer/practice_coach_sheet.dart lib/src/model/offline_computer/practice_coach_engine.dart test/view/offline_computer/practice_coach_sheet_test.dart lib/src/view/analysis/analysis_screen.dart
       - name: Analyze changed code
         run: flutter analyze lib/src/view/offline_computer/offline_computer_game_screen.dart lib/src/view/offline_computer/practice_coach_sheet.dart test/view/offline_computer/practice_coach_sheet_test.dart lib/src/view/analysis/analysis_screen.dart lib/src/model/settings/board_preferences.dart
-      - name: Run coaching handoff tests
+      - name: Test deterministic coaching
         run: flutter test test/view/offline_computer/practice_coach_sheet_test.dart
       - name: Build Android debug APK
         run: >-
